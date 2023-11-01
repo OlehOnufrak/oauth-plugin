@@ -10,11 +10,12 @@ module OAuth
       end
 
       module ClassMethods
+       # replace deprecrated `before_filter` to `before_action`
         def oauthenticate(options={})
           filter_options = {}
           filter_options[:only]   = options.delete(:only) if options[:only]
           filter_options[:except] = options.delete(:except) if options[:except]
-          before_filter Filter.new(options), filter_options
+          before_action Filter.new(options), filter_options
         end
       end
 
@@ -125,8 +126,9 @@ module OAuth
         Authenticator.new(self,[:oauth10_access_token,:interactive]).allow?
       end
 
+      # replace deprecated render :text, to render :plain
       def invalid_oauth_response(code=401,message="Invalid OAuth Request")
-        render :text => message, :status => code
+        render :plain => message, :status => code
         false
       end
 

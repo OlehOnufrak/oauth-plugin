@@ -1,10 +1,11 @@
 module Oauth
   module Controllers
     module ConsumerController
+      # replace deprecrated `before_filter` and `skip_before_filter` to `before_action` and `skip_before_action`
       def self.included(controller)
         controller.class_eval do
-          before_filter :load_consumer, :except=>:index
-          skip_before_filter :verify_authenticity_token,:only=>:callback
+          before_action :load_consumer, :except=>:index
+          skip_before_action :verify_authenticity_token,:only=>:callback
         end
       end
 
@@ -85,6 +86,7 @@ module Oauth
 
       end
 
+      # replace deprecated render :text, to render :plain
       def client
         method = request.method.downcase.to_sym
         path = "/#{params[:endpoint]}?#{request.query_string}"
@@ -96,12 +98,12 @@ module Oauth
               oauth_response = @token.client.send(method, oauth_response['Location'])
             end
 
-            render :text => oauth_response.body
+            render :plain => oauth_response.body
           else
-            render :text => "Token needed.", :status => 403
+            render :plain => "Token needed.", :status => 403
           end
         else
-          render :text => "Not allowed", :status => 403
+          render :plain => "Not allowed", :status => 403
         end
       end
 
